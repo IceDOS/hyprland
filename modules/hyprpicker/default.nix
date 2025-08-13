@@ -14,5 +14,5 @@ in
 
   home-manager.users = mapAttrs (user: _: {
     wayland.windowManager.hyprland.settings.bind = [ "$mainMod, C, exec, hyprpicker --autocopy" ];
-  }) cfg.system.users;
+  }) cfg.users;
 }

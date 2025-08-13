@@ -14,5 +14,11 @@ in
 
   home-manager.users = mapAttrs (user: _: {
     wayland.windowManager.hyprland.settings.bind = [ "$mainMod CTRL SHIFT, F, exec, hyprfreeze -a" ];
-  }) cfg.system.users;
+  }) cfg.users;
+
+  nixpkgs.overlays = [
+    (final: super: {
+      hyprfreeze = final.callPackage ./package.nix { };
+    })
+  ];
 }

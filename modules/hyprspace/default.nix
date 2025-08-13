@@ -45,5 +45,5 @@ mkIf (cfg.desktop.hyprland.plugins.hyprspace) {
         ];
       };
     };
-  }) cfg.system.users;
+  }) cfg.users;
 }

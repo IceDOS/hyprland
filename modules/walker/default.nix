@@ -204,5 +204,5 @@ in
         StartLimitBurst = 60;
       };
     };
-  }) cfg.system.users;
+  }) cfg.users;
 }

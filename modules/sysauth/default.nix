@@ -26,5 +26,11 @@ in
         StartLimitBurst = 60;
       };
     };
-  }) cfg.system.users;
+  }) cfg.users;
+
+  nixpkgs.overlays = [
+    (final: super: {
+      sysauth = final.callPackage ./package.nix { };
+    })
+  ];
 }

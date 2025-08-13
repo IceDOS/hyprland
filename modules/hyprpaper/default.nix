@@ -23,5 +23,5 @@ in
         ipc = "off";
       };
     };
-  }) cfg.system.users;
+  }) cfg.users;
 }

@@ -28,5 +28,5 @@ mkIf (cfg.desktop.hyprland.plugins.cs2fix.enable) {
         }
       ];
     };
-  }) cfg.system.users;
+  }) cfg.users;
 }

@@ -47,5 +47,5 @@ in
         Install.WantedBy = [ "timers.target" ];
       };
     };
-  }) cfg.system.users;
+  }) cfg.users;
 }

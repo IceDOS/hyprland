@@ -22,5 +22,5 @@ in
     };
 
     dconf.settings."org/gnome/control-center".last-panel = "online-accounts";
-  }) cfg.system.users;
+  }) cfg.users;
 }

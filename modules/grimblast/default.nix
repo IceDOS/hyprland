@@ -24,5 +24,5 @@ in
       "ALT, Print, exec, grimblast copy"
       "SHIFT, Print, exec, grimblast edit output"
     ];
-  }) cfg.system.users;
+  }) cfg.users;
 }

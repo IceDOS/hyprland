@@ -78,5 +78,5 @@ in
         ];
       };
     };
-  }) cfg.system.users;
+  }) cfg.users;
 }

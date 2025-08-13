@@ -114,5 +114,5 @@ in
         ++ cfg.desktop.hyprland.settings.windowRules;
       };
     };
-  }) cfg.system.users;
+  }) cfg.users;
 }

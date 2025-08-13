@@ -60,5 +60,11 @@ mkIf (hyproled.enable) {
         Install.WantedBy = [ "timers.target" ];
       };
     };
-  }) cfg.system.users;
+  }) cfg.users;
+
+  nixpkgs.overlays = [
+    (final: super: {
+      hyproled = final.callPackage ./package.nix { };
+    })
+  ];
 }

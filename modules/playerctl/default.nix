@@ -18,5 +18,5 @@ in
       ", XF86AudioPrev, exec, playerctl previous"
       ", XF86AudioNext, exec, playerctl next"
     ];
-  }) cfg.system.users;
+  }) cfg.users;
 }
