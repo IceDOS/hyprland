@@ -1,0 +1,40 @@
+[icedos.desktop.hyprland.settings]
+followMouse = 1 # Options: https://wiki.hyprland.org/Configuring/Variables/#follow-mouse-cursor
+secondsToLowerBrightness = 60
+startupScript = """
+nautilus -w &
+nautilus -w &
+signal-desktop &
+steam &
+zeditor &
+zen-beta --no-remote -P default --name zen-startup &
+zen-social &
+"""
+windowRules = [
+  "workspace 1 silent, class:^(zen-startup)$",
+  "workspace 2 silent, class:^(dev.zed.Zed)$",
+  "workspace 11 silent, class:^(signal|zen-social)$",
+  "workspace 12 silent, class:^(Steam|steam)$, title:^((?!notificationtoasts.*).)*$",
+  "workspace 12 silent, title:^(.*Steam[A-Za-z0-9\\s]*)$",
+  "workspace 13 silent, class:^(org\\.gnome\\.Nautilus)$",
+]
+
+[icedos.desktop.hyprland.settings.animations]
+enable = true
+bezierCurve = "0.83, 0, 0.17, 1" # Presets: https://easings.net
+speed = 2 # Function: (x * 100)ms
+
+[icedos.desktop.hyprland.plugins]
+hyprspace = true
+
+[icedos.desktop.hyprland.plugins.cs2fix]
+enable = true
+width = 1440
+height = 1080
+
+[icedos.desktop.hyprland.plugins.hyproled]
+enable = true
+startWidth = 0
+startHeight = 0
+endWidth = 3440
+endHeight = 1440
