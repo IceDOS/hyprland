@@ -5,13 +5,13 @@
 
 stdenvNoCC.mkDerivation rec {
   name = "hyproled";
-  version = "0.1.2";
+  version = "0.1.3";
 
   src = fetchFromGitHub {
     owner = "mklan";
     repo = "hyproled";
     rev = version;
-    hash = "sha256-vbwhX5YTb1p+vTeU0c9++PvhgnaM63IZ6Ga1KKFAdGo=";
+    hash = "sha256-WdnMSrvLjqL/EV/noFJ5OfRmEDE4IkfwKYrf+k9Bw1Q=";
   };
 
   installPhase = ''
