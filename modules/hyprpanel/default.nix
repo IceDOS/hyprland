@@ -375,6 +375,7 @@ in
                   "kbinput",
                   "volume",
                   "network",
+                  "custom/ip",
                   ${if (lib.hasAttr "bluetooth" cfg.hardware) then ''"bluetooth",'' else ""}
                   ${if (cfg.hardware.devices.laptop) then ''"battery",'' else ""}
                   "systray",
@@ -421,6 +422,66 @@ in
             "menus.power.reboot": "systemctl reboot -i",
             "menus.power.sleep": "systemctl suspend -i"
           }
+        '';
+      };
+
+      ".config/hyprpanel/modules.json" = {
+        force = true;
+
+        text = ''
+          {
+              "custom/ip": {
+                  "icon": "",
+                  "label": "{country}",
+                  "tooltip": "{ip}",
+                  "execute": "${
+                    let
+                      inherit (pkgs) curl jq;
+                      command = "query-ip";
+                      curlBin = "${curl}/bin/curl";
+                      jqBin = "${jq}/bin/jq";
+                    in
+                    pkgs.writeShellScript command ''
+                      TMP_DIR="/tmp/icedos"
+                      IP_LOCATION="$TMP_DIR/ip"
+                      CURRENT_IP=$(${curlBin} -s https://ifconfig.me)
+
+                      # Recalculate country after 15 minutes by deleting the ip file
+                      find "$TMP_DIR" -maxdepth 1 -type f -name "ip" -mmin +15 -delete
+
+                      [[ -e "$IP_LOCATION" && "$(cat $IP_LOCATION | ${jqBin} '.ip' -r)" == "$CURRENT_IP" ]] && echo "$(cat "$IP_LOCATION")" && exit 0
+
+                      IP_INFO=$(${curlBin} -s "https://ipinfo.io/$CURRENT_IP" 2>/dev/null)
+
+                      if echo "$IP_INFO" | ${jqBin} "has(\"error\")" | grep -q true; then
+                        echo "{ \"country\": \"N/A\", \"ip\": \"$CURRENT_IP\" }" > "$IP_LOCATION"
+                      else
+                        echo "$IP_INFO" > "$IP_LOCATION"
+                      fi
+
+                      cat "$IP_LOCATION"
+                    ''
+                  }",
+                  "interval": 1000,
+                  "actions": {}
+              }
+          }
+        '';
+      };
+
+      ".config/hyprpanel/modules.scss" = {
+        force = true;
+
+        text = ''
+          @include styleModule(
+              'cmodule-ip',
+              (
+                'text-color': #FFFFFF,
+                'icon-color': #FFFFFF,
+                'icon-background': #1E1E1E,
+                'label-background': #1E1E1E,
+              )
+          );
         '';
       };
 
