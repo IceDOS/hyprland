@@ -1,6 +1,6 @@
 let
-  __rev = "cbe61bded419b06caa9d251528574d48dfaa261e";
-  __sha256 = "Jj7neO1RKhvinOp9TYAT+Vz4d76GJaB9LTWvuEuqJBw=";
+  __rev = "901c2a28394f406bfbc86e6e72ace876c763d196";
+  __sha256 = "sha256-IBKOIgAmu97M7JG4o5UxjtUu1SocVCKubv8/EP5CJOg=";
   __bgColor = "@theme_bg_color";
   __bgTransparency = 1.0;
 in
@@ -59,8 +59,6 @@ stdenv.mkDerivation rec {
   makeFlags = [ "PREFIX=$(out)" ];
 
   preBuild = ''
-    find ./src -type f | xargs -I {} sed -i "s|/usr/local|$out|g" {}
-    find ./src -type f | xargs -I {} sed -i "s|/usr|$out|g" {}
     sed -i "s|libsysauth.so|$out/lib/libsysauth.so|g" ./src/main.cpp
     cp ${_style} ./style.css
   '';
