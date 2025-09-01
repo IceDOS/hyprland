@@ -446,8 +446,8 @@ in
                       IP_LOCATION="$TMP_DIR/ip"
                       CURRENT_IP=$(${curlBin} -s https://ifconfig.me)
 
-                      # Recalculate country after 15 minutes by deleting the ip file
-                      find "$TMP_DIR" -maxdepth 1 -type f -name "ip" -mmin +15 -delete
+                      # Recalculate ip info after 2 minutes by deleting the ip file
+                      find "$TMP_DIR" -maxdepth 1 -type f -name "ip" -mmin +2 -exec sh -c 'cat "$1"; rm -rf "$1"' _ {} \;
 
                       [[ -e "$IP_LOCATION" && "$(cat $IP_LOCATION | ${jqBin} '.ip' -r)" == "$CURRENT_IP" ]] && echo "$(cat "$IP_LOCATION")" && exit 0
 
