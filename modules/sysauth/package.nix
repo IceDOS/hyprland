@@ -49,6 +49,11 @@ stdenv.mkDerivation rec {
     wrapGAppsHook4
   ];
 
+  postPatch = ''
+    substituteInPlace src/main.cpp \
+      --replace-fail "libsysauth.so" "$out/lib/libsysauth.so"
+  '';
+
   buildInputs = [
     gtk4-layer-shell
     gtkmm4
@@ -57,9 +62,4 @@ stdenv.mkDerivation rec {
 
   hardeningDisable = [ "format" ];
   makeFlags = [ "PREFIX=$(out)" ];
-
-  preBuild = ''
-    sed -i "s|libsysauth.so|$out/lib/libsysauth.so|g" ./src/main.cpp
-    cp ${_style} ./style.css
-  '';
 }

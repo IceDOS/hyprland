@@ -26,6 +26,12 @@ in
         StartLimitBurst = 60;
       };
     };
+
+    home.file.".config/sys64/auth/style.css".text = ''
+      #sysauth .box_layout {
+        background: @theme_bg_color;
+      }
+    '';
   }) cfg.users;
 
   nixpkgs.overlays = [
