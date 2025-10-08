@@ -1,6 +1,8 @@
-{ icedosLib, lib, ... }:
+{ icedosLib, ... }:
 
 let
+  inherit (builtins) readFile;
+
   inherit (icedosLib)
     mkBoolOption
     mkNumberOption
@@ -11,39 +13,42 @@ in
 {
   options.icedos =
     let
-      hyprland = (fromTOML (lib.fileContents ./config.toml)).icedos.desktop.hyprland;
+      animations = settings.animations;
+      hyprland = (fromTOML (readFile ./config.toml)).icedos.desktop.hyprland;
+      plugins = hyprland.plugins;
+      settings = hyprland.settings;
     in
     {
       desktop.hyprland = {
         plugins = {
           cs2fix = {
-            enable = mkBoolOption { default = false; };
-            width = mkNumberOption { default = 0; };
-            height = mkNumberOption { default = 0; };
+            enable = mkBoolOption { default = plugins.cs2fix.enable; };
+            width = mkNumberOption { default = plugins.cs2fix.width; };
+            height = mkNumberOption { default = plugins.cs2fix.height; };
           };
 
-          hyprspace = mkBoolOption { default = false; };
+          hyprspace = mkBoolOption { default = plugins.hyprspace; };
 
           hyproled = {
-            enable = mkBoolOption { default = false; };
-            startWidth = mkNumberOption { default = 0; };
-            startHeight = mkNumberOption { default = 0; };
-            endWidth = mkNumberOption { default = 0; };
-            endHeight = mkNumberOption { default = 0; };
+            enable = mkBoolOption { default = plugins.hyproled.enable; };
+            startWidth = mkNumberOption { default = plugins.hyproled.startWidth; };
+            startHeight = mkNumberOption { default = plugins.hyproled.startHeight; };
+            endWidth = mkNumberOption { default = plugins.hyproled.endWidth; };
+            endHeight = mkNumberOption { default = plugins.hyproled.endHeight; };
           };
         };
 
         settings = {
           animations = {
-            enable = mkBoolOption { default = true; };
-            bezierCurve = mkStrOption { default = hyprland.settings.animations.bezierCurve; };
-            speed = mkNumberOption { default = hyprland.settings.animations.speed; };
+            enable = mkBoolOption { default = animations.enable; };
+            bezierCurve = mkStrOption { default = animations.bezierCurve; };
+            speed = mkNumberOption { default = animations.speed; };
           };
 
-          followMouse = mkNumberOption { default = 1; };
-          secondsToLowerBrightness = mkNumberOption { default = 60; };
-          startupScript = mkStrOption { default = ""; };
-          windowRules = mkStrListOption { default = [ ]; };
+          followMouse = mkNumberOption { default = settings.followMouse; };
+          secondsToLowerBrightness = mkNumberOption { default = settings.secondsToLowerBrightness; };
+          startupScript = mkStrOption { default = settings.startupScript; };
+          windowRules = mkStrListOption { default = settings.windowRules; };
         };
       };
     };
