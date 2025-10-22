@@ -7,13 +7,13 @@
 
 stdenvNoCC.mkDerivation rec {
   name = "hyprfreeze";
-  version = "1.1.2";
+  version = "1.2.0";
 
   src = fetchFromGitHub {
     owner = "zerodya";
     repo = "hyprfreeze";
     tag = "v${version}";
-    hash = "sha256-iMFSbMRVO3yOBZvCzx0BAb26KEETE7Nb+960B24r+W4=";
+    hash = "sha256-omwAWBEnb14ZBux7bvXSJyi7FI1LZ5GaZFn46/bWJA4=";
   };
 
   nativeBuildInputs = [ makeWrapper ];
