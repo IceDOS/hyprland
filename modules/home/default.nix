@@ -65,6 +65,8 @@ in
           rounding = 5;
         };
 
+        ecosystem.no_donation_nag = true;
+
         env = [
           "QT_AUTO_SCREEN_SCALE_FACTOR,1"
           "WLR_DRM_NO_ATOMIC,1"
@@ -83,6 +85,8 @@ in
           ''
         ];
 
+        experimental.xx_color_management_v4 = true;
+
         general = {
           allow_tearing = true;
           "col.active_border" = "rgb(505050)";
@@ -90,6 +94,7 @@ in
           gaps_in = 0;
           gaps_out = 0;
           resize_on_border = true;
+          snap.enabled = true;
         };
 
         input = {
