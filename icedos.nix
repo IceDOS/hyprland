@@ -112,5 +112,23 @@ in
       )
     ];
 
-  meta.name = "default";
+  meta = {
+    name = "default";
+
+    optionalDependencies = [
+      {
+        url = "github:icedos/apps";
+        modules = [ "cosmic-greeter" ];
+      }
+
+      {
+        url = "github:icedos/apps";
+
+        modules = [
+          "gnome-control-center"
+          "walker"
+        ];
+      }
+    ];
+  };
 }
