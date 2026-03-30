@@ -1,8 +1,6 @@
-{ icedosLib, ... }:
+{ icedosLib, lib, ... }:
 
 let
-  inherit (builtins) readFile;
-
   inherit (icedosLib)
     mkBoolOption
     mkNumberOption
@@ -13,10 +11,14 @@ in
 {
   options.icedos =
     let
-      animations = settings.animations;
-      hyprland = (fromTOML (readFile ./config.toml)).icedos.desktop.hyprland;
-      plugins = hyprland.plugins;
-      settings = hyprland.settings;
+      inherit (lib) readFile;
+
+      inherit ((fromTOML (readFile ./config.toml)).icedos.desktop.hyprland)
+        plugins
+        settings
+        ;
+
+      inherit (settings) animations;
     in
     {
       desktop.hyprland = {
@@ -117,7 +119,7 @@ in
 
     optionalDependencies = [
       {
-        url = "github:icedos/apps";
+        url = "github:icedos/desktop";
         modules = [ "cosmic-greeter" ];
       }
 
