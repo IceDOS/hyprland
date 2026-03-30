@@ -7,11 +7,7 @@
 }:
 
 let
-  inherit (lib)
-    mapAttrs
-    mkIf
-    ;
-
+  inherit (lib) hasAttr mapAttrs mkIf;
   cfg = config.icedos;
 
   accentColor = icedosLib.generateAccentColor {

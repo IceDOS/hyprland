@@ -7,7 +7,7 @@
 }:
 
 let
-  inherit (lib) mapAttrs;
+  inherit (lib) hasAttr mapAttrs;
   cfg = config.icedos;
 
   accentColor = icedosLib.generateAccentColor {
@@ -489,15 +489,18 @@ in
     };
 
     systemd.user.services.hyprpanel = {
-      Unit.Description = "Hyprpanel - Bar";
+      Unit = {
+        Description = "Hyprpanel - Bar";
+        StartLimitIntervalSec = 60;
+        StartLimitBurst = 60;
+      };
+
       Install.WantedBy = [ "graphical-session.target" ];
 
       Service = {
         ExecStart = "${package}/bin/hyprpanel";
         Nice = "-20";
         Restart = "on-failure";
-        StartLimitIntervalSec = 60;
-        StartLimitBurst = 60;
       };
     };
   }) cfg.users;

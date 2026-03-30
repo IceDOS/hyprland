@@ -21,8 +21,8 @@ mkIf (cfg.desktop.hyprland.plugins.cs2fix.enable) {
       settings.plugin = [
         {
           csgo-vulkan-fix = {
-            res_w = cfg.desktop.hyprland.cs2fix.width;
-            res_h = cfg.desktop.hyprland.cs2fix.height;
+            res_w = cfg.desktop.hyprland.plugins.cs2fix.width;
+            res_h = cfg.desktop.hyprland.plugins.cs2fix.height;
             class = "cs2";
           };
         }

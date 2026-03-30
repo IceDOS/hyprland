@@ -25,11 +25,11 @@ in
           ExecStart = ''
             ${
               makeBinPath [
-                (pkgs.writeShellScriptBin "eye-wellbeign" ''
+                (pkgs.writeShellScriptBin "eye-wellbeing" ''
                   "${pkgs.procps}/bin/pidof" hyprlock || "${notify-send}" "System" "Take a 20-second break to look at something 6 meters away"
                 '')
               ]
-            }/eye-wellbeign
+            }/eye-wellbeing
           '';
         };
       };

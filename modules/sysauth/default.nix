@@ -15,15 +15,18 @@ in
 
   home-manager.users = mapAttrs (user: _: {
     systemd.user.services.sysauth = {
-      Unit.Description = "Sysauth - Polkit authentication agent";
+      Unit = {
+        Description = "Sysauth - Polkit authentication agent";
+        StartLimitIntervalSec = 60;
+        StartLimitBurst = 60;
+      };
+
       Install.WantedBy = [ "graphical-session.target" ];
 
       Service = {
         ExecStart = "${package}/bin/sysauth";
         Nice = "-20";
         Restart = "on-failure";
-        StartLimitIntervalSec = 60;
-        StartLimitBurst = 60;
       };
     };
 
