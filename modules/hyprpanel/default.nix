@@ -12,8 +12,8 @@ let
 
   accentColor = icedosLib.generateAccentColor {
     accentColor = cfg.desktop.accentColor;
-    gnomeAccentColor = cfg.desktop.gnomeAccentColor;
-    hasGnome = lib.hasAttr "gnome" cfg.desktop;
+    gnomeAccentColor = cfg.desktop.gnome.accentColor;
+    hasGnome = hasAttr "gnome" cfg.desktop;
   };
 
   killCommand = "killall -9 .hyprpanel-wrapped";

@@ -72,7 +72,7 @@ in
             font_size = 14;
             halign = "center";
             position = "0, -45";
-            text = ''cmd[update:500] echo $(hyprctl devices -j | jq -r '.'keyboards' | .[] | select(.main==true) | .'active_keymap''')'';
+            text = "cmd[update:500] echo $(hyprctl devices -j | jq -r '.'keyboards' | .[] | select(.main==true) | .'active_keymap'')";
             valign = "center";
           }
         ];
