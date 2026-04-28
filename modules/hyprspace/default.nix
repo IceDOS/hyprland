@@ -7,7 +7,7 @@
 }:
 
 let
-  inherit (lib) hasAttr mapAttrs mkIf;
+  inherit (lib) hasAttr mkIf;
   cfg = config.icedos;
 
   accentColor = icedosLib.generateAccentColor {
@@ -17,29 +17,31 @@ let
   };
 in
 mkIf (cfg.desktop.hyprland.plugins.hyprspace) {
-  home-manager.users = mapAttrs (user: _: {
-    wayland.windowManager.hyprland = {
-      plugins = [ pkgs.hyprlandPlugins.hyprspace ];
+  home-manager.sharedModules = [
+    {
+      wayland.windowManager.hyprland = {
+        plugins = [ pkgs.hyprlandPlugins.hyprspace ];
 
-      settings = {
-        bind = [
-          "$mainMod, TAB, overview:toggle"
-          "$mainMod SHIFT, TAB, overview:toggle, all"
-        ];
+        settings = {
+          bind = [
+            "$mainMod, TAB, overview:toggle"
+            "$mainMod SHIFT, TAB, overview:toggle, all"
+          ];
 
-        plugin = [
-          {
-            overview = {
-              gapsIn = 5;
-              gapsOut = 5;
-              panelHeight = 100;
-              showEmptyWorkspace = false;
-              showNewWorkspace = false;
-              workspaceActiveBorder = accentColor;
-            };
-          }
-        ];
+          plugin = [
+            {
+              overview = {
+                gapsIn = 5;
+                gapsOut = 5;
+                panelHeight = 100;
+                showEmptyWorkspace = false;
+                showNewWorkspace = false;
+                workspaceActiveBorder = accentColor;
+              };
+            }
+          ];
+        };
       };
-    };
-  }) cfg.users;
+    }
+  ];
 }

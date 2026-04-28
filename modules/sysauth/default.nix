@@ -1,41 +1,36 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ pkgs, ... }:
 
 let
-  inherit (lib) mapAttrs;
-  cfg = config.icedos;
   package = pkgs.sysauth;
 in
 {
   environment.systemPackages = [ package ];
 
-  home-manager.users = mapAttrs (user: _: {
-    systemd.user.services.sysauth = {
-      Unit = {
-        Description = "Sysauth - Polkit authentication agent";
-        StartLimitIntervalSec = 60;
-        StartLimitBurst = 60;
+  home-manager.sharedModules = [
+    {
+      systemd.user.services.sysauth = {
+        Unit = {
+          Description = "Sysauth - Polkit authentication agent";
+          StartLimitIntervalSec = 60;
+          StartLimitBurst = 60;
+        };
+
+        Install.WantedBy = [ "graphical-session.target" ];
+
+        Service = {
+          ExecStart = "${package}/bin/sysauth";
+          Nice = "-20";
+          Restart = "on-failure";
+        };
       };
 
-      Install.WantedBy = [ "graphical-session.target" ];
-
-      Service = {
-        ExecStart = "${package}/bin/sysauth";
-        Nice = "-20";
-        Restart = "on-failure";
-      };
-    };
-
-    home.file.".config/sys64/auth/style.css".text = ''
-      #sysauth .box_layout {
-        background: @theme_bg_color;
-      }
-    '';
-  }) cfg.users;
+      home.file.".config/sys64/auth/style.css".text = ''
+        #sysauth .box_layout {
+          background: @theme_bg_color;
+        }
+      '';
+    }
+  ];
 
   nixpkgs.overlays = [
     (final: super: {
