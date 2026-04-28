@@ -6,50 +6,52 @@
 }:
 
 let
-  inherit (lib) mapAttrs optional;
+  inherit (lib) optional;
   cfg = config.icedos;
 in
 {
   environment.systemPackages = [ pkgs.brightnessctl ];
 
-  home-manager.users = mapAttrs (
-    user: _:
-    let
-      idle = cfg.desktop.users.${user}.idle;
-    in
-    {
-      services.hypridle = {
-        enable = true;
+  home-manager.sharedModules = [
+    (
+      { config, ... }:
+      let
+        idle = cfg.desktop.users.${config.home.username}.idle;
+      in
+      {
+        services.hypridle = {
+          enable = true;
 
-        settings = {
-          general = {
-            lock_cmd = "pidof hyprlock || hyprlock";
-            before_sleep_cmd = "loginctl lock-session";
-            after_sleep_cmd = "hyprctl dispatch dpms on";
-          };
+          settings = {
+            general = {
+              lock_cmd = "pidof hyprlock || hyprlock";
+              before_sleep_cmd = "loginctl lock-session";
+              after_sleep_cmd = "hyprctl dispatch dpms on";
+            };
 
-          listener = [
-            {
-              timeout = toString (cfg.desktop.hyprland.settings.secondsToLowerBrightness);
-              on-timeout = "brightnessctl -s set 10 && brightnessctl -sd rgb:kbd_backlight set 0";
-              on-resume = "brightnessctl -r && brightnessctl -rd rgb:kbd_backlight";
+            listener = [
+              {
+                timeout = toString (cfg.desktop.hyprland.settings.secondsToLowerBrightness);
+                on-timeout = "brightnessctl -s set 10 && brightnessctl -sd rgb:kbd_backlight set 0";
+                on-resume = "brightnessctl -r && brightnessctl -rd rgb:kbd_backlight";
+              }
+            ]
+            ++ optional (idle.lock.enable) {
+              timeout = toString (idle.lock.seconds);
+              on-timeout = "loginctl lock-session";
             }
-          ]
-          ++ optional (idle.lock.enable) {
-            timeout = toString (idle.lock.seconds);
-            on-timeout = "loginctl lock-session";
-          }
-          ++ optional (idle.disableMonitors.enable) {
-            timeout = toString (idle.disableMonitors.seconds);
-            on-timeout = "hyprctl dispatch dpms off";
-            on-resume = "hyprctl dispatch dpms on";
-          }
-          ++ optional (idle.suspend.enable) {
-            timeout = toString (idle.suspend.seconds);
-            on-timeout = "systemctl suspend";
+            ++ optional (idle.disableMonitors.enable) {
+              timeout = toString (idle.disableMonitors.seconds);
+              on-timeout = "hyprctl dispatch dpms off";
+              on-resume = "hyprctl dispatch dpms on";
+            }
+            ++ optional (idle.suspend.enable) {
+              timeout = toString (idle.suspend.seconds);
+              on-timeout = "systemctl suspend";
+            };
           };
         };
-      };
-    }
-  ) cfg.users;
+      }
+    )
+  ];
 }

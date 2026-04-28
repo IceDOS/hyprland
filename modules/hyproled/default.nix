@@ -8,7 +8,6 @@
 let
   inherit (lib)
     makeBinPath
-    mapAttrs
     mkIf
     ;
 
@@ -23,44 +22,46 @@ in
 mkIf (hyproled.enable) {
   environment.systemPackages = [ pkgs.hyproled ];
 
-  home-manager.users = mapAttrs (user: _: {
-    systemd.user = {
-      services.hyproled = {
-        Unit.Description = "Hyproled - Prevents OLED burn-in";
-        Install.WantedBy = [ "graphical-session.target" ];
+  home-manager.sharedModules = [
+    {
+      systemd.user = {
+        services.hyproled = {
+          Unit.Description = "Hyproled - Prevents OLED burn-in";
+          Install.WantedBy = [ "graphical-session.target" ];
 
-        Service = {
-          ExecStart = ''
-            ${
-              makeBinPath [
-                (pkgs.writeShellScriptBin "hyproled-wrapper" ''
-                  hyproled ${area}
-                  hyproled -s ${area}
-                  hyproled off
-                '')
-              ]
-            }/hyproled-wrapper
-          '';
+          Service = {
+            ExecStart = ''
+              ${
+                makeBinPath [
+                  (pkgs.writeShellScriptBin "hyproled-wrapper" ''
+                    hyproled ${area}
+                    hyproled -s ${area}
+                    hyproled off
+                  '')
+                ]
+              }/hyproled-wrapper
+            '';
 
-          Nice = "-20";
-        };
-      };
-
-      timers.hyproled = {
-        Unit.Description = "Timer for hyproled";
-
-        Timer = {
-          Unit = "hyproled.service";
-          Persistent = true;
-          OnBootSec = "1h";
-          OnUnitActiveSec = "1h";
-          AccuracySec = "1h";
+            Nice = "-20";
+          };
         };
 
-        Install.WantedBy = [ "timers.target" ];
+        timers.hyproled = {
+          Unit.Description = "Timer for hyproled";
+
+          Timer = {
+            Unit = "hyproled.service";
+            Persistent = true;
+            OnBootSec = "1h";
+            OnUnitActiveSec = "1h";
+            AccuracySec = "1h";
+          };
+
+          Install.WantedBy = [ "timers.target" ];
+        };
       };
-    };
-  }) cfg.users;
+    }
+  ];
 
   nixpkgs.overlays = [
     (final: super: {

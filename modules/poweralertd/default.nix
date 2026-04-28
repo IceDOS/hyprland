@@ -1,33 +1,28 @@
-{
-  config,
-  lib,
-  pkgs,
-  ...
-}:
+{ pkgs, ... }:
 
 let
-  inherit (lib) mapAttrs;
-  cfg = config.icedos;
   package = pkgs.poweralertd;
 in
 {
   environment.systemPackages = [ package ];
 
-  home-manager.users = mapAttrs (user: _: {
-    systemd.user.services.poweralertd = {
-      Unit = {
-        Description = "Poweralertd - UPower-powered power alerter";
-        StartLimitIntervalSec = 60;
-        StartLimitBurst = 60;
-      };
+  home-manager.sharedModules = [
+    {
+      systemd.user.services.poweralertd = {
+        Unit = {
+          Description = "Poweralertd - UPower-powered power alerter";
+          StartLimitIntervalSec = 60;
+          StartLimitBurst = 60;
+        };
 
-      Install.WantedBy = [ "graphical-session.target" ];
+        Install.WantedBy = [ "graphical-session.target" ];
 
-      Service = {
-        ExecStart = "${package}/bin/poweralertd";
-        Nice = "-20";
-        Restart = "on-failure";
+        Service = {
+          ExecStart = "${package}/bin/poweralertd";
+          Nice = "-20";
+          Restart = "on-failure";
+        };
       };
-    };
-  }) cfg.users;
+    }
+  ];
 }
