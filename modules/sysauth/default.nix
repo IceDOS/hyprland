@@ -24,7 +24,7 @@ in
         };
       };
 
-      home.file.".config/sys64/auth/style.css".text = ''
+      xdg.configFile."sys64/auth/style.css".text = ''
         #sysauth .box_layout {
           background: @theme_bg_color;
         }
