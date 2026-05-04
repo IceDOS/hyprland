@@ -1,7 +1,6 @@
 [icedos.desktop.hyprland.settings]
 followMouse = 1 # Options: https://wiki.hyprland.org/Configuring/Variables/#follow-mouse-cursor
 secondsToLowerBrightness = 60
-startupScript = ""
 windowRules = []
 
 [icedos.desktop.hyprland.settings.animations]

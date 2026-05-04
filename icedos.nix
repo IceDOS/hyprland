@@ -49,7 +49,6 @@ in
 
           followMouse = mkNumberOption { default = settings.followMouse; };
           secondsToLowerBrightness = mkNumberOption { default = settings.secondsToLowerBrightness; };
-          startupScript = mkStrOption { default = settings.startupScript; };
           windowRules = mkStrListOption { default = settings.windowRules; };
         };
       };
