@@ -1,18 +1,27 @@
 {
   config,
+  icedosLib,
   lib,
   pkgs,
   ...
 }:
 
 let
-  inherit (lib)
-    makeBinPath
-    mkIf
+  inherit (config.icedos) desktop;
+  inherit (desktop) hyprland windows;
+  inherit (windows) activeHint activeHintSize;
+
+  inherit (hyprland.settings)
+    animations
+    followMouse
+    startupScript
+    windowRules
     ;
 
-  cfg = config.icedos;
-  animations = cfg.desktop.hyprland.settings.animations;
+  inherit (icedosLib.desktop) accentHex;
+  inherit (lib) makeBinPath mkIf;
+
+  accent = accentHex config;
 in
 {
   home-manager.sharedModules = [
@@ -79,7 +88,7 @@ in
             ''
               ${
                 makeBinPath [
-                  (pkgs.writeShellScriptBin "hyprland-startup" cfg.desktop.hyprland.settings.startupScript)
+                  (pkgs.writeShellScriptBin "hyprland-startup" startupScript)
                 ]
               }/hyprland-startup
             ''
@@ -89,7 +98,8 @@ in
 
           general = {
             allow_tearing = true;
-            "col.active_border" = "rgb(505050)";
+            border_size = if activeHint then activeHintSize else 0;
+            "col.active_border" = "rgb(${accent})";
             "col.inactive_border" = "rgb(000000)";
             gaps_in = 0;
             gaps_out = 0;
@@ -99,7 +109,7 @@ in
 
           input = {
             accel_profile = "flat";
-            follow_mouse = cfg.desktop.hyprland.settings.followMouse;
+            follow_mouse = followMouse;
             kb_layout = "us,gr";
             kb_options = "grp:win_space_toggle";
           };
@@ -116,7 +126,7 @@ in
           windowrulev2 = [
             "noborder, fullscreen:1" # Hide maximized window borders
           ]
-          ++ cfg.desktop.hyprland.settings.windowRules;
+          ++ windowRules;
         };
       };
     }
