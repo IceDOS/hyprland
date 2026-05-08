@@ -7,7 +7,8 @@
 
 let
   inherit (lib) optional;
-  cfg = config.icedos;
+  inherit (config.icedos) desktop;
+  inherit (desktop.hyprland.settings) secondsToLowerBrightness;
 in
 {
   environment.systemPackages = [ pkgs.brightnessctl ];
@@ -16,7 +17,7 @@ in
     (
       { config, ... }:
       let
-        idle = cfg.desktop.users.${config.home.username}.idle;
+        idle = desktop.users.${config.home.username}.idle;
       in
       {
         services.hypridle = {
@@ -31,7 +32,7 @@ in
 
             listener = [
               {
-                timeout = toString (cfg.desktop.hyprland.settings.secondsToLowerBrightness);
+                timeout = toString secondsToLowerBrightness;
                 on-timeout = "brightnessctl -s set 10 && brightnessctl -sd rgb:kbd_backlight set 0";
                 on-resume = "brightnessctl -r && brightnessctl -rd rgb:kbd_backlight";
               }

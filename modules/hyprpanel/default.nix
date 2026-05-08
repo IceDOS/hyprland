@@ -8,12 +8,13 @@
 
 let
   inherit (lib) hasAttr;
-  cfg = config.icedos;
+  inherit (config.icedos) desktop hardware;
+  inherit (desktop) gnome;
 
   accentColor = icedosLib.generateAccentColor {
-    accentColor = cfg.desktop.accentColor;
-    gnomeAccentColor = cfg.desktop.gnome.accentColor;
-    hasGnome = hasAttr "gnome" cfg.desktop;
+    inherit (desktop) accentColor;
+    gnomeAccentColor = gnome.accentColor;
+    hasGnome = hasAttr "gnome" desktop;
   };
 
   killCommand = "killall -9 .hyprpanel-wrapped";
@@ -379,8 +380,8 @@ in
                       "volume",
                       "network",
                       "custom/ip",
-                      ${if (hasAttr "bluetooth" cfg.hardware) then ''"bluetooth",'' else ""}
-                      ${if (cfg.hardware.devices.laptop) then ''"battery",'' else ""}
+                      ${if (hasAttr "bluetooth" hardware) then ''"bluetooth",'' else ""}
+                      ${if (hardware.devices.laptop) then ''"battery",'' else ""}
                       "systray",
                       "clock",
                       "notifications",

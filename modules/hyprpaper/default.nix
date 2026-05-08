@@ -6,12 +6,19 @@
 }:
 
 let
+  inherit (lib)
+    hasPrefix
+    mkIf
+    optionalAttrs
+    removePrefix
+    ;
+
   package = pkgs.hyprpaper;
   globalWallpaper = config.icedos.desktop.wallpaper;
-  isColor = lib.hasPrefix "color:" globalWallpaper;
+  isColor = hasPrefix "color:" globalWallpaper;
   isPath = !isColor && globalWallpaper != "";
-  hyprWallpaper = lib.removePrefix "path:" globalWallpaper;
-  colorHex = lib.removePrefix "color:" globalWallpaper;
+  hyprWallpaper = removePrefix "path:" globalWallpaper;
+  colorHex = removePrefix "color:" globalWallpaper;
 in
 {
   environment.systemPackages = [ package ];
@@ -24,7 +31,7 @@ in
         settings = {
           ipc = "off";
         }
-        // lib.optionalAttrs isPath {
+        // optionalAttrs isPath {
           preload = hyprWallpaper;
           wallpaper = ", ${hyprWallpaper}";
         };
@@ -32,7 +39,7 @@ in
 
       # hyprpaper can't render solid color. Compositor's misc.background_color
       # is what shows when no wallpaper is loaded — set it for the color case.
-      wayland.windowManager.hyprland.settings.misc.background_color = lib.mkIf isColor "0xff${colorHex}";
+      wayland.windowManager.hyprland.settings.misc.background_color = mkIf isColor "0xff${colorHex}";
     }
   ];
 }

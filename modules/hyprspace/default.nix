@@ -8,15 +8,16 @@
 
 let
   inherit (lib) hasAttr mkIf;
-  cfg = config.icedos;
+  inherit (config.icedos) desktop;
+  inherit (desktop) gnome hyprland;
 
   accentColor = icedosLib.generateAccentColor {
-    accentColor = cfg.desktop.accentColor;
-    gnomeAccentColor = cfg.desktop.gnome.accentColor;
-    hasGnome = hasAttr "gnome" cfg.desktop;
+    inherit (desktop) accentColor;
+    gnomeAccentColor = gnome.accentColor;
+    hasGnome = hasAttr "gnome" desktop;
   };
 in
-mkIf (cfg.desktop.hyprland.plugins.hyprspace) {
+mkIf hyprland.plugins.hyprspace {
   home-manager.sharedModules = [
     {
       wayland.windowManager.hyprland = {

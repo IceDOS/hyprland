@@ -11,8 +11,7 @@ let
     mkIf
     ;
 
-  cfg = config.icedos;
-  hyproled = cfg.desktop.hyprland.plugins.hyproled;
+  inherit (config.icedos.desktop.hyprland.plugins) hyproled;
   startWidth = toString (hyproled.startWidth);
   startHeight = toString (hyproled.startHeight);
   endWidth = toString (hyproled.endWidth);

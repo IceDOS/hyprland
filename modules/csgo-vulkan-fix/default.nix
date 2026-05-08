@@ -7,9 +7,9 @@
 
 let
   inherit (lib) mkIf;
-  cfg = config.icedos;
+  inherit (config.icedos.desktop.hyprland.plugins) cs2fix;
 in
-mkIf (cfg.desktop.hyprland.plugins.cs2fix.enable) {
+mkIf cs2fix.enable {
   home-manager.sharedModules = [
     {
       wayland.windowManager.hyprland = {
@@ -18,8 +18,8 @@ mkIf (cfg.desktop.hyprland.plugins.cs2fix.enable) {
         settings.plugin = [
           {
             csgo-vulkan-fix = {
-              res_w = cfg.desktop.hyprland.plugins.cs2fix.width;
-              res_h = cfg.desktop.hyprland.plugins.cs2fix.height;
+              res_w = cs2fix.width;
+              res_h = cs2fix.height;
               class = "cs2";
             };
           }
