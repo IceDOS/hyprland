@@ -8,14 +8,9 @@
 
 let
   inherit (lib) hasAttr;
-  inherit (config.icedos) desktop hardware;
-  inherit (desktop) gnome;
+  inherit (config.icedos) hardware;
 
-  accentColor = icedosLib.generateAccentColor {
-    inherit (desktop) accentColor;
-    gnomeAccentColor = gnome.accentColor;
-    hasGnome = hasAttr "gnome" desktop;
-  };
+  accentColor = (icedosLib.generateAccent config).hex;
 
   killCommand = "killall -9 .hyprpanel-wrapped";
   package = pkgs.hyprpanel;
@@ -32,7 +27,6 @@ in
 
         xdg.configFile = {
           "hyprpanel/config.json" = {
-            force = true;
             text = ''
               {
                 "bar.customModules.updates.pollingInterval": 1440000,
@@ -430,8 +424,6 @@ in
           };
 
           "hyprpanel/modules.json" = {
-            force = true;
-
             text = ''
               {
                   "custom/ip": {
@@ -474,8 +466,6 @@ in
           };
 
           "hyprpanel/modules.scss" = {
-            force = true;
-
             text = ''
               @include styleModule(
                   'cmodule-ip',

@@ -7,15 +7,11 @@
 }:
 
 let
-  inherit (lib) hasAttr mkIf;
+  inherit (lib) mkIf;
   inherit (config.icedos) desktop;
-  inherit (desktop) gnome hyprland;
+  inherit (desktop) hyprland;
 
-  accentColor = icedosLib.generateAccentColor {
-    inherit (desktop) accentColor;
-    gnomeAccentColor = gnome.accentColor;
-    hasGnome = hasAttr "gnome" desktop;
-  };
+  accentColor = (icedosLib.generateAccent config).hex;
 in
 mkIf hyprland.plugins.hyprspace {
   home-manager.sharedModules = [
