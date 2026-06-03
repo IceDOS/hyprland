@@ -47,7 +47,6 @@ in
             speed = mkNumberOption { default = animations.speed; };
           };
 
-          followMouse = mkNumberOption { default = settings.followMouse; };
           secondsToLowerBrightness = mkNumberOption { default = settings.secondsToLowerBrightness; };
           windowRules = mkStrListOption { default = settings.windowRules; };
         };

@@ -8,19 +8,25 @@
 
 let
   inherit (config.icedos) desktop;
-  inherit (desktop) hyprland windows;
+  inherit (desktop) hyprland keyboardLayouts windows;
   inherit (windows) activeHint activeHintSize;
 
   inherit (hyprland.settings)
     animations
-    followMouse
     windowRules
     ;
 
   inherit (icedosLib.desktop) accentHex;
-  inherit (lib) makeBinPath mkIf;
+  inherit (lib)
+    concatStringsSep
+    makeBinPath
+    mkIf
+    optionalAttrs
+    ;
 
   accent = accentHex config;
+
+  followsMouse = if windows.focus.followsMouse then 1 else 0;
 in
 {
   home-manager.sharedModules = [
@@ -113,9 +119,11 @@ in
 
             input = {
               accel_profile = "flat";
-              follow_mouse = followMouse;
-              kb_layout = "us,gr";
+              follow_mouse = followsMouse;
               kb_options = "grp:win_space_toggle";
+            }
+            // optionalAttrs (keyboardLayouts != [ ]) {
+              kb_layout = concatStringsSep "," keyboardLayouts;
             };
 
             misc = {
