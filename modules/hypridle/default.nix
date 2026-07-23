@@ -41,8 +41,8 @@ in
               timeout = toString (idle.lock.seconds);
               on-timeout = "loginctl lock-session";
             }
-            ++ optional (idle.disableMonitors.enable) {
-              timeout = toString (idle.disableMonitors.seconds);
+            ++ optional (idle.disable-monitors.enable) {
+              timeout = toString (idle.disable-monitors.seconds);
               on-timeout = "hyprctl dispatch dpms off";
               on-resume = "hyprctl dispatch dpms on";
             }
