@@ -11,9 +11,9 @@ in
 {
   options.icedos =
     let
-      inherit (lib) readFile;
+      inherit (lib) importTOML;
 
-      inherit ((fromTOML (readFile ./config.toml)).icedos.desktop.hyprland)
+      inherit ((importTOML ./config.toml).icedos.desktop.hyprland)
         plugins
         settings
         ;
