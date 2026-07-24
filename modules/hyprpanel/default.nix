@@ -1,13 +1,11 @@
 {
   config,
   icedosLib,
-  lib,
   pkgs,
   ...
 }:
 
 let
-  inherit (lib) hasAttr;
   inherit (config.icedos) hardware;
 
   accentColor = (icedosLib.generateAccent config).hex;
@@ -374,7 +372,7 @@ in
                       "volume",
                       "network",
                       "custom/ip",
-                      ${if (hasAttr "bluetooth" hardware) then ''"bluetooth",'' else ""}
+                      ${if config.hardware.bluetooth.enable then ''"bluetooth",'' else ""}
                       ${if (hardware.devices.laptop) then ''"battery",'' else ""}
                       "systray",
                       "clock",
