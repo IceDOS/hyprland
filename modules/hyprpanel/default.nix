@@ -430,14 +430,16 @@ in
                       "tooltip": "{ip}",
                       "execute": "${
                         let
-                          inherit (pkgs) curl jq;
+                          inherit (pkgs) coreutils curl jq;
                           command = "query-ip";
                           curlBin = "${curl}/bin/curl";
                           jqBin = "${jq}/bin/jq";
+                          mkdirBin = "${coreutils}/bin/mkdir";
                         in
                         pkgs.writeShellScript command ''
                           TMP_DIR="/tmp/icedos"
                           IP_LOCATION="$TMP_DIR/ip"
+                          ${mkdirBin} -p "$TMP_DIR"
                           CURRENT_IP=$(${curlBin} -s https://ifconfig.me)
 
                           # Recalculate ip info after 2 minutes by deleting the ip file
