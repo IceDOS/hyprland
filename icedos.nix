@@ -48,6 +48,7 @@ in
           };
 
           secondsToLowerBrightness = mkNumberOption { default = settings.secondsToLowerBrightness; };
+          showPublicIp = mkBoolOption { default = settings.showPublicIp; };
           windowRules = mkStrListOption { default = settings.windowRules; };
         };
       };

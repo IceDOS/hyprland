@@ -1,12 +1,13 @@
 {
   fetchFromGitHub,
+  lib,
   makeWrapper,
   psmisc,
   stdenvNoCC,
 }:
 
 stdenvNoCC.mkDerivation rec {
-  name = "hyprfreeze";
+  pname = "hyprfreeze";
   version = "1.2.0";
 
   src = fetchFromGitHub {
@@ -29,4 +30,12 @@ stdenvNoCC.mkDerivation rec {
 
     runHook postInstall
   '';
+
+  meta = {
+    description = "Utility to suspend a game process (and other programs) in Hyprland";
+    homepage = "https://github.com/zerodya/hyprfreeze";
+    license = lib.licenses.gpl3Only;
+    mainProgram = "hyprfreeze";
+    platforms = lib.platforms.linux;
+  };
 }

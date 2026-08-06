@@ -40,8 +40,6 @@ mkIf (hyproled.enable) {
                 ]
               }/hyproled-wrapper
             '';
-
-            Nice = "-20";
           };
         };
 

@@ -88,7 +88,6 @@ in
 
             env = [
               "QT_AUTO_SCREEN_SCALE_FACTOR,1"
-              "WLR_DRM_NO_ATOMIC,1"
               "XDG_CURRENT_DESKTOP,Hyprland"
               "XDG_SESSION_DESKTOP,Hyprland"
               "XDG_SESSION_TYPE,wayland"

@@ -19,7 +19,6 @@ in
 
         Service = {
           ExecStart = "${package}/bin/poweralertd";
-          Nice = "-20";
           Restart = "on-failure";
         };
       };

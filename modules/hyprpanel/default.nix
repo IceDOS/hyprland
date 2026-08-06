@@ -8,9 +8,11 @@
 let
   inherit (config.icedos) hardware;
 
+  inherit (config.icedos.desktop.hyprland.settings) showPublicIp;
+
   accentColor = (icedosLib.generateAccent config).hex;
 
-  killCommand = "killall -9 .hyprpanel-wrapped";
+  panelRestartCommand = "systemctl --user restart hyprpanel";
   package = pkgs.hyprpanel;
 in
 {
@@ -21,7 +23,7 @@ in
     (
       { config, ... }:
       {
-        wayland.windowManager.hyprland.settings.bind = [ "CTRL ALT, DELETE, exec, ${killCommand}" ];
+        wayland.windowManager.hyprland.settings.bind = [ "CTRL ALT, DELETE, exec, ${panelRestartCommand}" ];
 
         xdg.configFile = {
           "hyprpanel/config.json" = {
@@ -371,7 +373,7 @@ in
                       "kbinput",
                       "volume",
                       "network",
-                      "custom/ip",
+                      ${if showPublicIp then ''"custom/ip",'' else ""}
                       ${if config.hardware.bluetooth.enable then ''"bluetooth",'' else ""}
                       ${if (hardware.devices.laptop) then ''"battery",'' else ""}
                       "systray",
@@ -413,10 +415,10 @@ in
                 "bar.customModules.kbLayout.icon": "",
                 "theme.bar.buttons.modules.kbLayout.spacing": "0em",
                 "bar.launcher.icon": "",
-                "hyprpanel.restartCommand": "${killCommand}",
-                "menus.power.shutdown": "systemctl poweroff -i",
-                "menus.power.reboot": "systemctl reboot -i",
-                "menus.power.sleep": "systemctl suspend -i"
+                "hyprpanel.restartCommand": "${panelRestartCommand}",
+                "menus.power.shutdown": "systemctl poweroff",
+                "menus.power.reboot": "systemctl reboot",
+                "menus.power.sleep": "systemctl suspend"
               }
             '';
           };
@@ -430,33 +432,64 @@ in
                       "tooltip": "{ip}",
                       "execute": "${
                         let
-                          inherit (pkgs) coreutils curl jq;
+                          inherit (pkgs)
+                            coreutils
+                            curl
+                            findutils
+                            jq
+                            ;
                           command = "query-ip";
-                          curlBin = "${curl}/bin/curl";
-                          jqBin = "${jq}/bin/jq";
-                          mkdirBin = "${coreutils}/bin/mkdir";
+                          script = pkgs.writeShellApplication {
+                            name = command;
+                            runtimeInputs = [
+                              coreutils
+                              curl
+                              findutils
+                              jq
+                            ];
+                            text = ''
+                              CACHE_DIR="''${XDG_RUNTIME_DIR:-$HOME/.cache}/icedos"
+                              "${coreutils}/bin/mkdir" -p "$CACHE_DIR"
+                              trap '[[ -n "''${IP_TMP:-}" ]] && "${coreutils}/bin/rm" -f "$IP_TMP"' EXIT
+
+                              IP_LOCATION="$CACHE_DIR/ip"
+
+                              if [[ -e "$IP_LOCATION" && ! -L "$IP_LOCATION" ]]; then
+                                if [[ -z "$("${findutils}/bin/find" "$CACHE_DIR" -maxdepth 1 -name ip -mmin -2 -print -quit)" ]]; then
+                                  "${coreutils}/bin/rm" -f "$IP_LOCATION"
+                                fi
+                              fi
+
+                              if [[ -L "$IP_LOCATION" ]]; then
+                                "${coreutils}/bin/rm" -f "$IP_LOCATION"
+                              fi
+
+                              if [[ ! -e "$IP_LOCATION" ]]; then
+                                CURRENT_IP=$("${curl}/bin/curl" -fsS --connect-timeout 3 --max-time 5 https://ifconfig.me || true)
+
+                                if [[ -n "$CURRENT_IP" && "$CURRENT_IP" =~ ^[0-9a-fA-F:.]+$ ]]; then
+                                  IP_INFO=$("${curl}/bin/curl" -fsS --connect-timeout 3 --max-time 5 "https://ipinfo.io/$CURRENT_IP" || true)
+                                  IP_INFO=$(printf '%s' "$IP_INFO" | "${jq}/bin/jq" -c 'select(type == "object" and (has("error") | not))' 2>/dev/null || true)
+
+                                  if [[ -z "$IP_INFO" ]]; then
+                                    IP_INFO=$("${jq}/bin/jq" -cn --arg ip "$CURRENT_IP" '{ country: "N/A", ip: $ip }')
+                                  fi
+
+                                  IP_TMP=$("${coreutils}/bin/mktemp" "$CACHE_DIR/ip.XXXXXX")
+                                  "${coreutils}/bin/printf" '%s' "$IP_INFO" > "$IP_TMP"
+                                else
+                                  IP_TMP=$("${coreutils}/bin/mktemp" "$CACHE_DIR/ip.XXXXXX")
+                                  "${jq}/bin/jq" -cn '{ country: "N/A", ip: "N/A" }' > "$IP_TMP"
+                                fi
+
+                                "${coreutils}/bin/mv" -f "$IP_TMP" "$IP_LOCATION"
+                              fi
+
+                              "${coreutils}/bin/cat" "$IP_LOCATION"
+                            '';
+                          };
                         in
-                        pkgs.writeShellScript command ''
-                          TMP_DIR="/tmp/icedos"
-                          IP_LOCATION="$TMP_DIR/ip"
-                          ${mkdirBin} -p "$TMP_DIR"
-                          CURRENT_IP=$(${curlBin} -s https://ifconfig.me)
-
-                          # Recalculate ip info after 2 minutes by deleting the ip file
-                          find "$TMP_DIR" -maxdepth 1 -type f -name "ip" -mmin +2 -exec sh -c 'cat "$1"; rm -rf "$1"' _ {} \;
-
-                          [[ -e "$IP_LOCATION" && "$(cat $IP_LOCATION | ${jqBin} '.ip' -r)" == "$CURRENT_IP" ]] && echo "$(cat "$IP_LOCATION")" && exit 0
-
-                          IP_INFO=$(${curlBin} -s "https://ipinfo.io/$CURRENT_IP" 2>/dev/null)
-
-                          if echo "$IP_INFO" | ${jqBin} "has(\"error\")" | grep -q true; then
-                            echo "{ \"country\": \"N/A\", \"ip\": \"$CURRENT_IP\" }" > "$IP_LOCATION"
-                          else
-                            echo "$IP_INFO" > "$IP_LOCATION"
-                          fi
-
-                          cat "$IP_LOCATION"
-                        ''
+                        "${script}/bin/${command}"
                       }",
                       "interval": 1000,
                       "actions": {}
@@ -493,7 +526,6 @@ in
 
           Service = {
             ExecStart = "${package}/bin/hyprpanel";
-            Nice = "-20";
             Restart = "on-failure";
           };
         };

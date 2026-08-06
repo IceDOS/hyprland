@@ -1,5 +1,6 @@
 [icedos.desktop.hyprland.settings]
 secondsToLowerBrightness = 60
+showPublicIp = false
 windowRules = []
 
 [icedos.desktop.hyprland.settings.animations]

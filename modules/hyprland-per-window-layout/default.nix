@@ -19,7 +19,6 @@ in
 
         Service = {
           ExecStart = "${package}/bin/hyprland-per-window-layout";
-          Nice = "-20";
           Restart = "on-failure";
         };
       };
