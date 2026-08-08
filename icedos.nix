@@ -107,12 +107,14 @@ in
   meta = {
     name = "default";
 
-    optionalDependencies = [
+    dependencies = [
       {
         url = "github:icedos/desktop";
         modules = [ "cosmic-greeter" ];
       }
+    ];
 
+    optionalDependencies = [
       {
         url = "github:icedos/apps";
 
