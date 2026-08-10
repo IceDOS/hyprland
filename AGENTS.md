@@ -21,7 +21,7 @@ wallpaper integration.
 ## Layout (DE repo)
 - **Root `icedos.nix`** + root `config.toml` = the DE-wide option schema.
 - `modules/<feature>/icedos.nix` = sub-features: `hyprlock`, `hypridle`, `hyprpanel`,
-  `hyprpaper`, `hyprpicker`, `hyprspace`, `hyprfreeze`, `hyproled`,
+  `hyprpaper`, `hyprpicker`, `hyprspace`, `hyproled`,
   `hyprland-per-window-layout`, `grimblast`, `eye-wellbeing`, `csgo-vulkan-fix`,
   `playerctl`, `poweralertd`, `sysauth`, `home`.
 - `flake.nix` scans the whole repo: `icedosLib.scanModules { path = ./.; filename = "icedos.nix"; }`.

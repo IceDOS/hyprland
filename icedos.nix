@@ -121,6 +121,7 @@ in
         modules = [
           "gnome-control-center"
           "walker"
+          "wl-freeze"
         ];
       }
     ];
