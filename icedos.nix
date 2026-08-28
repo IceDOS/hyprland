@@ -82,6 +82,7 @@ in
               gnome-themes-extra # Adwaita GTK theme
               hyprshade # Shader config tool
               wdisplays # Displays manager
+              wl-freeze # Process suspender
             ];
           };
 
@@ -121,7 +122,6 @@ in
         modules = [
           "gnome-control-center"
           "walker"
-          "wl-freeze"
         ];
       }
     ];
